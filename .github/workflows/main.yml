@@ -57,8 +57,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=starbucks
-            -Dsonar.projectName=starbucks
+            -Dsonar.projectKey=nike
+            -Dsonar.projectName=nike
 
       # # Wait for SonarQube Quality Gate
       # - name: Wait for SonarQube Quality Gate
@@ -101,7 +101,7 @@ jobs:
       # - name: Trivy Image Scan
       #   uses: aquasecurity/trivy-action@master
       #   with:
-      #     image-ref: ${{ env.ACR_LOGIN_SERVER }}/starbucks:latest
+      #     image-ref: ${{ env.ACR_LOGIN_SERVER }}/nike:latest
       #     format: "table"
       #     severity: "CRITICAL,HIGH"
       #     exit-code: 0               
@@ -137,25 +137,25 @@ jobs:
           az account set --subscription ${{ env.SUBSCRIPTION_ID }}
           az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
           cd nike-Manifest
-          kubectl create ns starbucks-ns
+          kubectl create ns nike-ns
           kubectl apply -f .
-          kubectl get pods -n starbucks-ns
-          kubectl get ingress -n starbucks-ns -owide
+          kubectl get pods -n nike-ns
+          kubectl get ingress -n nike-ns -owide
 
-      #  Email Notification
-      - name: Send Email Notification
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.EMAIL_USER }}
-          password: ${{ secrets.EMAIL_PASS }}
-          subject: "GitHub Actions Build ${{ job.status }}: Amazon CI/CD #${{ github.run_number }}"
-          html_body: |
-            <p>Build: ${{ job.status }}</p>
-            <p>Repository: ${{ github.repository }}</p>
-            <p>Branch: ${{ github.ref_name }}</p>
-            <p>Build URL: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow</a></p>
-          to: ${{ secrets.EMAIL_USER }}
-          from: ${{ secrets.EMAIL_USER }}
+      # #  Email Notification
+      # - name: Send Email Notification
+      #   if: always()
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: smtp.gmail.com
+      #     server_port: 465
+      #     username: ${{ secrets.EMAIL_USER }}
+      #     password: ${{ secrets.EMAIL_PASS }}
+      #     subject: "GitHub Actions Build ${{ job.status }}: Amazon CI/CD #${{ github.run_number }}"
+      #     html_body: |
+      #       <p>Build: ${{ job.status }}</p>
+      #       <p>Repository: ${{ github.repository }}</p>
+      #       <p>Branch: ${{ github.ref_name }}</p>
+      #       <p>Build URL: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow</a></p>
+      #     to: ${{ secrets.EMAIL_USER }}
+      #     from: ${{ secrets.EMAIL_USER }}
